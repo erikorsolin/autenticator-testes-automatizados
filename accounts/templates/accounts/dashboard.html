@@ -1,0 +1,16 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Autenticator - Dashboard{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center" style="height: 85vh;">
+        <div class="card shadow-lg p-4 text-center" style="width: 400px; border-radius: 10px;">
+            <h2 class="fw-bold text-dark">Bem-vindo, {{ user.username }}! 🎉</h2>
+            <p class="text-muted">Você está logado no sistema.</p>
+
+            <div class="d-grid gap-3 mt-4">
+                <a href="{% url 'logout' %}" class="btn btn-danger btn-lg w-100">Sair</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

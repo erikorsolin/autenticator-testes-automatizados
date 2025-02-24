@@ -1,1 +1,0 @@
-# autenticator-testes-automatizados
