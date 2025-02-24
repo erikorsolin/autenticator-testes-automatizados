@@ -8,42 +8,42 @@ class AccountsTestCase(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(
-            username="testuser",
-            email="testuser@example.com",
-            password="testpassword123"
+            username="eriktester",
+            email="eriktester@gmail.com",
+            password="erik234"
         )
 
 
     def test_user_registration(self):
         response = self.client.post(reverse('register'), {
-            'username': 'newuser',
-            'email': 'newuser@example.com',
-            'password1': 'strongpassword123',
-            'password2': 'strongpassword123'
+            'username': 'novousuario',
+            'email': 'novousuario@gmail.com',
+            'password1': 'senha123',
+            'password2': 'senha123'
         })
         self.assertEqual(response.status_code, 302)  # Redirecionamento esperado após o sucesso
-        self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
+        self.assertTrue(get_user_model().objects.filter(username="novousuario").exists())
 
 
     def test_login_successful(self):
         response = self.client.post(reverse('login'), {
-            'username': 'testuser',
-            'password': 'testpassword123'
+            'username': 'eriktester',
+            'password': 'erik234'
         })
         self.assertEqual(response.status_code, 302)  # Redirecionamento esperado após login
 
 
     def test_login_invalid_credentials(self):
         response = self.client.post(reverse('login'), {
-            'username': 'testuser',
-            'password': 'wrongpassword'
+            'username': 'eriktester',
+            'password': 'errada'
         })
         self.assertEqual(response.status_code, 200)  # A página de login deve recarregar
         self.assertContains(response, "Credenciais inválidas")
 
 
     def test_logout(self):
-        self.client.login(username="testuser", password="testpassword123")
+        self.client.login(username="eriktester", password="erik234")
         response = self.client.get(reverse('logout'))
         self.assertEqual(response.status_code, 302)  # Deve redirecionar para a home
         self.assertRedirects(response, reverse('home'))  # Confirma que redireciona para a página correta
@@ -60,10 +60,10 @@ class AccountsTestCase(TestCase):
 
     def test_register_with_existing_username(self):
         response = self.client.post(reverse('register'), {
-            'username': 'testuser',
-            'email': 'newemail@example.com',
-            'password1': 'password123',
-            'password2': 'password123'
+            'username': 'eriktester',
+            'email': 'novoemail@gmail.com',
+            'password1': 'senha123',
+            'password2': 'senha123'
         })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Usuário já existe")
@@ -71,10 +71,10 @@ class AccountsTestCase(TestCase):
 
     def test_register_with_existing_email(self):
         response = self.client.post(reverse('register'), {
-            'username': 'newuser',
-            'email': 'testuser@example.com',
-            'password1': 'password123',
-            'password2': 'password123'
+            'username': 'novousuario',
+            'email': 'eriktester@gmail.com',
+            'password1': 'senha123',
+            'password2': 'senha123'
         })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Email já cadastrado")
@@ -82,20 +82,20 @@ class AccountsTestCase(TestCase):
 
     def test_register_with_mismatched_passwords(self):
         response = self.client.post(reverse('register'), {
-            'username': 'newuser',
-            'email': 'newuser@example.com',
-            'password1': 'password123',
-            'password2': 'password456'
+            'username': 'novousuario',
+            'email': 'novousuario@gmail.com',
+            'password1': 'senha123',
+            'password2': 'senha456'
         })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "As senhas não coincidem")
 
 
     def test_dashboard_access_authenticated_user(self):
-        self.client.login(username="testuser", password="testpassword123")
+        self.client.login(username="eriktester", password="erik234")
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "testuser")  # Verifica se o nome do usuário está na página
+        self.assertContains(response, "eriktester")  # Verifica se o nome do usuário está na página
 
 
     def test_dashboard_access_unauthenticated_user(self):
@@ -106,6 +106,10 @@ class AccountsTestCase(TestCase):
 
     def test_password_reset(self):
         response = self.client.post(reverse('forget_password'), {
-            'email': 'testuser@example.com'
+            'email': 'eriktester@gmail.com'
         })
         self.assertEqual(response.status_code, 302)  # Redirecionamento esperado
+
+
+
+
