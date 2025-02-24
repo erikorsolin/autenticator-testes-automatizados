@@ -43,4 +43,11 @@ Agora o projeto estará rodando em `http://127.0.0.1:8000/` 🎉
 
 ---
 
+### ⚙️ Executar os testes automatizados
+
+```bash
+python manage.py test accounts
+```
+
+
 **Criado em 10 minutos para testes de QA** 🕒⚡
