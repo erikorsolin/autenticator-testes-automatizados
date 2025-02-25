@@ -112,4 +112,61 @@ class AccountsTestCase(TestCase):
 
 
 
+class SecurityTestCase(TestCase):
 
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="securetester",
+            email="securetester@gmail.com",
+            password="securepass"
+        )
+
+
+    def test_sql_injection_login(self):
+        response = self.client.post(reverse('login'), {
+            'username': "' OR '1'='1",
+            'password': "any_password"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Credenciais inválidas")  # Não deve permitir acesso
+
+
+    def test_sql_injection_login_comment(self):
+        response = self.client.post(reverse('login'), {
+            'username': "admin' --",
+            'password': "any_password"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Credenciais inválidas")
+
+
+    def test_sql_injection_login_union(self):
+        response = self.client.post(reverse('login'), {
+            'username': "' UNION SELECT 1, username, password FROM auth_user --",
+            'password': "any_password"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Credenciais inválidas")
+
+
+    def test_sql_injection_password_reset(self):
+        response = self.client.post(reverse('forget_password'), {
+            'email': "' OR '1'='1"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Email inexistente")
+
+
+    def test_sql_injection_dashboard_access(self):
+        response = self.client.get(reverse('dashboard') + "?id=' OR '1'='1")
+        self.assertEqual(response.status_code, 302)  # Deve redirecionar para login
+
+
+    def test_sql_injection_logout(self):
+        response = self.client.get(reverse('logout') + "?id=1 OR 1=1")
+        self.assertEqual(response.status_code, 302)  # Deve redirecionar para home
+
+
+    def test_sql_injection_order_by(self):
+        response = self.client.get(reverse('dashboard') + "?order=1; DROP TABLE auth_user;")
+        self.assertEqual(response.status_code, 302)  # Não deve executar comandos arbitrários'''
